@@ -1,0 +1,204 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather in Cities</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navbar styles */
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            background-color: #333;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        nav ul li {
+            margin: 0;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 15px 20px;
+            display: block;
+        }
+
+        .burger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .burger span {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+        }
+
+        .burger-toggle {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .burger {
+                display: flex;
+            }
+
+            nav ul {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                background-color: #333;
+            }
+
+            .burger-toggle:checked ~ nav ul {
+                display: flex;
+            }
+
+            nav ul li {
+                margin: 0;
+                text-align: center;
+                padding: 10px;
+            }
+
+            nav ul li a {
+                padding: 10px 20px;
+            }
+        }
+
+        /* Weather display styles */
+        .weather-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .city-weather {
+            margin-bottom: 30px;
+        }
+
+        .city-name {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .weather-data {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        /* Footer styles */
+        footer {
+            background-color: #333;
+            padding: 20px;
+            text-align: center;
+        }
+
+        footer a {
+            margin: 0 10px;
+            text-decoration: none;
+        }
+
+        footer img {
+            width: 40px;
+            height: 40px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<input type="checkbox" id="burger-toggle" class="burger-toggle">
+<label for="burger-toggle" class="burger">
+    <span></span>
+    <span></span>
+    <span></span>
+</label>
+
+<nav class="navbar">
+    <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="video.html">Video</a></li>
+        <li><a href="audio.html">Music</a></li>
+        <li><a href="book.html">Book</a></li>
+        <li><a href="api.html">API</a></li>
+    </ul>
+</nav>
+
+<!-- Weather Display -->
+<div class="weather-container">
+    <div class="city-weather" id="petropavl">
+        <div class="city-name">Weather in Petropavl</div>
+        <div class="weather-data" id="petropavl-weather">Loading...</div>
+    </div>
+
+    <div class="city-weather" id="almaty">
+        <div class="city-name">Weather in Almaty</div>
+        <div class="weather-data" id="almaty-weather">Loading...</div>
+    </div>
+
+    <div class="city-weather" id="tokyo">
+        <div class="city-name">Weather in Tokyo</div>
+        <div class="weather-data" id="tokyo-weather">Loading...</div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <a href="https://youtube.com" target="_blank"><img src="public/youtube.png" alt="YouTube"></a>
+    <a href="https://instagram.com" target="_blank"><img src="public/instagram.png" alt="Instagram"></a>
+    <a href="https://tiktok.com" target="_blank"><img src="public/tiktok.png" alt="TikTok"></a>
+</footer>
+
+<script>
+    async function fetchWeather(city, latitude, longitude, elementId) {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`;
+
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (data.current_weather) {
+                const { temperature, windspeed } = data.current_weather;
+                document.getElementById(elementId).innerHTML = 
+                    `Temperature: ${temperature}°C <br> Wind Speed: ${windspeed} km/h`;
+            } else {
+                document.getElementById(elementId).innerHTML = "No weather data available.";
+            }
+        } catch (error) {
+            document.getElementById(elementId).innerHTML = "Error fetching weather data.";
+        }
+    }
+
+    // Fetch weather for Petropavl
+    fetchWeather('Petropavl', 54.866, 69.1525, 'petropavl-weather');
+
+    // Fetch weather for Almaty
+    fetchWeather('Almaty', 43.238, 76.945, 'almaty-weather');
+
+    // Fetch weather for Tokyo
+    fetchWeather('Tokyo', 35.6762, 139.6503, 'tokyo-weather');
+</script>
+
+</body>
+</html>
